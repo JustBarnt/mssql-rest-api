@@ -1,0 +1,108 @@
+{
+    "extends":[
+        "eslint:recommended"
+    ],
+    "env": {
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+        "eqeqeq":"error",
+        "arrow-spacing": [
+            "warn",
+            {
+            "before": true,
+            "after": true
+            }
+        ],
+        "no-constant-condition": 1,
+        "brace-style": [
+            "error",
+            "allman",
+            {
+            "allowSingleLine": true
+            }
+        ],
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
+        "comma-spacing": [
+            "error",
+            {
+            "after": true
+            }
+        ],
+        "curly": [
+            "error",
+            "multi"
+        ],
+        "dot-location": [
+            "error",
+            "property"
+        ],
+        "handle-callback-err": "off",
+        "indent": [
+            "warn",
+            "tab"
+        ],
+        "max-nested-callbacks": [
+            "error",
+            {
+            "max": 4
+            }
+        ],
+        "max-statements-per-line": [
+            "error",
+            {
+            "max": 2
+            }
+        ],
+        "no-console": "off",
+        "no-empty-function": "warn",
+        "no-floating-decimal": "error",
+        "no-shadow": [
+            "off"
+        ],
+		"no-empty": "warn",
+        "no-redeclare": 1,
+        "no-unused-vars": 0,
+        "no-var": "warn",
+        "no-lonely-if": "off",
+        "no-undef": "off",
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "prefer-const": "warn",
+        "quotes": [
+            "error",
+            "single",
+            {
+                "allowTemplateLiterals":true
+            }
+        ],
+        "semi": "error",
+        "no-trailing-spaces": "off",
+        "space-before-blocks": [
+            "error",
+            "never"
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+            "anonymous": "never",
+            "named": "never",
+            "asyncArrow": "never"
+            }
+        ],
+        "space-in-parens": [
+            "error",
+            "never"
+        ],
+        "yoda": "warn"
+        }
+}
