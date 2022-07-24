@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { config } from '../config';
 import sql from 'mssql';
 
@@ -7,18 +6,17 @@ import sql from 'mssql';
 
 /**
 * @description Asynchronous function for getting the entire recordset.
-* @author Brent Williams
-* @function GetOrders
 * 
+* @param {String} A string value representing the table to search.
 */
 
-async function GetOrders()
+async function QueryAll()
 {
 	try
 	{
 		const pool = await sql.connect(config);
-		const products = await pool.request().query('select * from Orders');
-		return products.recordsets;
+		const query = await pool.request().query(`select * from MeatInventory`);
+		return query.recordsets;
 	}
 	catch(error)
 	{
@@ -27,23 +25,23 @@ async function GetOrders()
 }
 
 /**
-* @description Asynchronous function for getting a single recordset.
-* @author Brent Williams
-* @function GetOrder
+* Asynchronous function for getting a single recordset.
 * 
-* @param {Number} productId Integer matching the Id you wish to query.
-* 
+* @param {String} table Table name to search through
+* @param {String} columnName name of column to preform search on.
+* @param {Number} queryParam Query parameter.
+* @return {Object} recordsets from the table
 */
 
-async function GetOrder(productId)
+async function QueryByColumn(columnName)
 {
 	try 
 	{
+
 		const pool = await sql.connect(config);
-		const product = await pool.request()
-			.input('input_parameter', sql.Int, parseInt(productId))
-			.query('select * from Orders where Id = @input_parameter');
-		return product.recordsets;
+		const query = await pool.request()
+			.query(`select ${columnName} from MeatInventory`);
+		return query.recordsets;
 	} 
 	catch(error) 
 	{
@@ -52,29 +50,37 @@ async function GetOrder(productId)
 }
 
 /**
-* @description Asynchronous function for adding an data to the database.
-* @author Brent Williams
-* @function AddOrder
+* Asynchronous function for adding an data to the database.
 * 
-* @param {Object} order Object containing matching keys to the column names in the table.
-* 
+* @param {Object} tableQuery Object containing matching keys to the column names in the table.
+* @param {String} storedProcedure String value containing the name of the stored procedure to execute.
+* @return {Object} Returns the record set from the table.
 */
 
 //TODO - Refactor after tutorial to match dynamic schema.
-async function AddOrder(order)
+async function AddToTable(tableQuery)
 {
 	try
 	{
+		const columns = [];
+		const values = [];
+
+		for(const key in tableQuery) 
+			columns.push(key);
+
+		for (const key in tableQuery)
+			values.push(tableQuery[key]);
+
+		
 		const pool = await sql.connect(config);
-		const insertProduct = await pool.request()
-			.input('Id', sql.Int, order.Id)
-			.input('Title', sql.NVarChar, order.Title)
-			.input('Quantity', sql.Int, order.Quantity)
-			.input('Message', sql.NVarChar, order.Message)
-			.input('City', sql.NVarChar, order.City)
-			.execute('InsertOrders');
-			
-		return insertProduct.recordsets;
+		const query = await pool.request()
+			.input(columns[0], sql.Int, values[0])
+			.input(columns[1], sql.NVarChar, values[1])
+			.input(columns[2], sql.Int, values[2])
+			.input(columns[3], sql.NVarChar, values[3])
+			.query(`insert into MeatInventory values (${columns[0], columns[1], columns[2], columns[3]})`);
+
+		return query.recordsets;
 	}
 	catch(error)
 	{ 
@@ -82,4 +88,4 @@ async function AddOrder(order)
 	}
 }
 
-export { AddOrder, GetOrder, GetOrders };
+export { AddToTable, QueryByColumn, QueryAll };
