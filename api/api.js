@@ -1,5 +1,4 @@
-import { GetOrder, GetOrders, AddOrder } from './operations';
-import { DB_Table } from './database';
+import { QueryByColumn, QueryAll, AddToTable } from './operations';
 import Express, { json, urlencoded } from 'express';
 import cors from 'cors';
 
@@ -13,39 +12,54 @@ app.use(urlencoded({ extended:true })); //Equal to app.use(body-parse.urlencoded
 app.use(cors());
 app.use('/api', router);
 
-//All routes starting with /api -> will run the log showing an attempted request has been made,
-//This is known as middleware
+/**
+* Express Server middleware, always logs to the terminal when A request is made with the time.
+*/
 router.use((request, response, next) => 
 {
+	const options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numberic'};
+	const LocalDate = new Date().toLocaleDateString(undefined, options);
+	const LocalTime = new Date().toLocaleTimeString('en-US');
+
 	console.log('Request made:');
-	console.log('Time:', Date.now());
+	console.log('Date:', LocalDate);
+	console.log('Time:', LocalTime);
 	next();
 });
 
-router.route('/orders').get((response) => 
+/**
+* Express REST Api route: Retrieves entire table based off URI Query.
+*/
+router.route('/query/:table').get((request, response) => 
 {
-	GetOrders().then((data) => 
+	QueryAll(request.params.table).then((data) => 
 	{
 		response.json(data[0]);
 	});
 });
 
-router.route('/orders').post((request, response) =>
+/**
+*  Express REST Api route: Adds JSON object to the table, given all data is passed correctly.
+*/
+router.route('/query').post((request, response) =>
 {
 	const order = { ...request.body };
 
 	console.log(`Request`);
 	console.log(request.body);
 
-	AddOrder(order).then(data => 
+	AddToTable(order).then(data => 
 	{
 		response.status(201).json(data);
 	});
 });
 
-router.route('/orders/:id').get((request, response) => 
+/**
+*  Express REST Api route: Queries a single item based on the 
+*/
+router.route('/orders/:column').get((request, response) => 
 {
-	GetOrder(request.params.id).then((data) => 
+	QueryByColumn(request.params.queryParam).then((data) => 
 	{
 		response.json(data[0]);
 	});
